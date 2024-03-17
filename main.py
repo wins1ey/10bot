@@ -25,23 +25,26 @@ async def start_10man(ctx):
         return user != bot.user and str(reaction.emoji) == "👍"
 
     registered_users = []
+    
     while len(registered_users) < 10:
 
-        # Add user to 10man with a reaction.
-        reaction, user = await bot.wait_for("reaction_add", check=check)
+        # Add user to the 10man by reacting to the bot's message.
+        reaction, user = await bot.wait_for("reaction_add", check = check)
         if user not in registered_users:
             registered_users.append(user)
             await user.send("You have been registered for the 10man.")
             print(registered_users)
 
-        # Remove user from 10man with the removal of the reaction.
+        # Remove user
         async def reaction_remove(reaction, user):
-            nonlocal registered_users
             if str(reaction.emoji) == "👍" and user in registered_users:
                 registered_users.remove(user)
                 await user.send("You have been removed from the 10man.")
                 print(registered_users)
-        
+
         bot.add_listener(reaction_remove, "on_reaction_remove")
 
+    message = await ctx.send("Starting 10man.")
+    print("Loop exited!")
+        
 bot.run(discord_token)
