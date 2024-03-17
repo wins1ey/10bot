@@ -20,8 +20,16 @@ async def on_ready():
 @bot.command(name = "10man")
 async def start_10man(ctx):
     message = await ctx.send("React with :thumbsup: to join 10man.")
-    @bot.event
-    async def on_reaction_add(reaction, user):
-        await ctx.send("Registered " + user.name + " for the 10man.")
+
+    def check(reaction, user):
+        return user != bot.user and str(reaction.emoji) == "👍"
+
+    registered_users = []
+    while len(registered_users) < 10:
+        reaction, user = await bot.wait_for("reaction_add", check = check)
+        if user not in registered_users:
+            registered_users.append(user)
+            await user.send("You have been registered for the 10man.")
+            print(registered_users)
 
 bot.run(discord_token)
