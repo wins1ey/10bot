@@ -19,6 +19,9 @@ async def on_ready():
 
 @bot.command(name = "10man")
 async def start_10man(ctx):
-    await ctx.send("React with :thumbsup: to join 10man.")
+    message = await ctx.send("React with :thumbsup: to join 10man.")
+    @bot.event
+    async def on_reaction_add(reaction, user):
+        await ctx.send("Registered " + user.name + " for the 10man.")
 
 bot.run(discord_token)
