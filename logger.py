@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 def log(message):
     timestamp = datetime.now().strftime("[%H:%M:%S]")
     message = f"[LOG]{timestamp}{message}"
