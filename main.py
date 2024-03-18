@@ -1,4 +1,5 @@
 import os
+import signal
 
 import discord
 from discord.ext import commands
@@ -58,6 +59,14 @@ async def start_10man(ctx):
 
     await ctx.send("Starting 10man.")
     log("Loop exited!")
+
+
+def signal_handler(sig, frame):
+    log("Received Ctrl+C, closing bot")
+    exit(1)
+
+
+signal.signal(signal.SIGINT, signal_handler)
 
 try:
     log("Running bot")
