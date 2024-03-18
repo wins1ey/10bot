@@ -55,6 +55,21 @@ class ButtonJoin(discord.ui.View):
             log(f"{name} tried to join more than once")
             await interaction.response.send_message("You tried to join more than once.", ephemeral=True)
 
+    @discord.ui.button(label="Leave", style=discord.ButtonStyle.red)
+    async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
+        name = interaction.user.name
+        if name in registered_users:
+            log(f"{name} left the 10man")
+            registered_users.remove(name)
+            message = "10man\n\n"
+            for users in registered_users:
+                message = message + users + "\n"
+            await interaction.response.edit_message(content=message)
+            self.value = True
+        else:
+            log(f"{name} tried to leave a 10man they did not join")
+            await interaction.response.send_message("You are not in this 10man.", ephemeral=True)
+
 
 @bot.command(name="10man")
 async def start_10man(ctx):
