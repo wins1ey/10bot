@@ -25,11 +25,11 @@ async def on_ready():
 
 @bot.command(name="10man")
 async def start_10man(ctx):
-    await ctx.send("React with :thumbsup: to join 10man")
+    await ctx.send("React with \U0001F44D to join 10man")
     log(f"{ctx.author.name} has started a 10man")
 
     def check(reaction, user):
-        return user != bot.user and str(reaction.emoji) == "👍"
+        return user != bot.user and str(reaction.emoji) == "\U0001F44D"
 
     registered_users = []
 
@@ -44,7 +44,7 @@ async def start_10man(ctx):
 
         # Remove user from the 10man by unreacting to the bot's message.
         async def reaction_remove(reaction, user):
-            if str(reaction.emoji) == "👍" and user in registered_users:
+            if str(reaction.emoji) == "\U0001F44D" and user in registered_users:
                 registered_users.remove(user)
                 await user.send("You have been removed from the 10man.")
                 log(f"{user.name} has been removed by unreacting")
