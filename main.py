@@ -1,4 +1,5 @@
 import os
+import signal
 
 import discord
 from discord.ext import commands
@@ -6,10 +7,15 @@ from dotenv import load_dotenv, find_dotenv
 
 from logger import log
 
-log("Bot Starting")
+log("Starting bot")
 
-load_dotenv(find_dotenv())
-discord_token = os.environ.get("DISCORD_TOKEN")
+try:
+    load_dotenv(find_dotenv())
+    discord_token = os.environ.get("DISCORD_TOKEN")
+    log("Discord token loaded")
+except Exception as e:
+    log(f"Error loading Discord token: {e}")
+    exit(1)
 
 intents = discord.Intents.default()
 intents.members = True
@@ -54,4 +60,17 @@ async def start_10man(ctx):
     await ctx.send("Starting 10man.")
     log("Loop exited!")
 
-bot.run(discord_token)
+
+def signal_handler(sig, frame):
+    log("Received Ctrl+C, closing bot")
+    exit(1)
+
+
+signal.signal(signal.SIGINT, signal_handler)
+
+try:
+    log("Running bot")
+    bot.run(discord_token)
+except Exception as e:
+    log(f"Error connecting to Discord: {e}")
+    exit(1)
