@@ -23,42 +23,61 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='/', intents=intents)
 
+registered_users = []
+
 
 @bot.event
 async def on_ready():
     log(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
 
+class ButtonJoin(discord.ui.View):
+
+    def __init__(self):
+        super().__init__()
+        self.value = None
+
+    @discord.ui.button(label="Join", style=discord.ButtonStyle.green)
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        name = interaction.user.name
+        if name not in registered_users:
+            log(f"{name} joined the 10man")
+            registered_users.append(name)
+            message = "10man\n\n"
+            for users in registered_users:
+                message = message + users + "\n"
+            self.value = True
+            if len(registered_users) == 10:
+                self.stop()
+                await interaction.response.edit_message(content=message, view=None)
+                log("10man populated")
+            else:
+                await interaction.response.edit_message(content=message)
+        else:
+            log(f"{name} tried to join more than once")
+            await interaction.response.send_message("You tried to join more than once.", ephemeral=True)
+
+    @discord.ui.button(label="Leave", style=discord.ButtonStyle.red)
+    async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
+        name = interaction.user.name
+        if name in registered_users:
+            log(f"{name} left the 10man")
+            registered_users.remove(name)
+            message = "10man\n\n"
+            for users in registered_users:
+                message = message + users + "\n"
+            await interaction.response.edit_message(content=message)
+            self.value = True
+        else:
+            log(f"{name} tried to leave a 10man they did not join")
+            await interaction.response.send_message("You are not in this 10man.", ephemeral=True)
+
+
 @bot.command(name="10man")
 async def start_10man(ctx):
-    await ctx.send("React with \U0001F44D to join 10man")
+    registered_users.clear()
+    await ctx.send("10man", view=ButtonJoin())
     log(f"{ctx.author.name} has started a 10man")
-
-    def check(reaction, user):
-        return user != bot.user and str(reaction.emoji) == "\U0001F44D"
-
-    registered_users = []
-
-    while len(registered_users) < 10:
-
-        # Add user to the 10man by reacting to the bot's message.
-        reaction, user = await bot.wait_for("reaction_add", check=check)
-        if user not in registered_users:
-            registered_users.append(user)
-            await user.send("You have registered for the 10man.")
-            log(f"{user.name} has registered by reacting")
-
-        # Remove user from the 10man by unreacting to the bot's message.
-        async def reaction_remove(reaction, user):
-            if str(reaction.emoji) == "\U0001F44D" and user in registered_users:
-                registered_users.remove(user)
-                await user.send("You have been removed from the 10man.")
-                log(f"{user.name} has been removed by unreacting")
-
-        bot.add_listener(reaction_remove, "on_reaction_remove")
-
-    await ctx.send("Starting 10man.")
-    log("Loop exited!")
 
 
 def signal_handler(sig, frame):
