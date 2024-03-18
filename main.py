@@ -4,10 +4,9 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv, find_dotenv
 
-from logger import Logger
+from logger import log
 
-log = Logger()
-log.log("Bot Starting...")
+log("Bot Starting...")
 
 load_dotenv(find_dotenv())
 discord_token = os.environ.get("DISCORD_TOKEN")
@@ -20,7 +19,7 @@ bot = commands.Bot(command_prefix = '/', intents = intents)
 
 @bot.event
 async def on_ready():
-    log.log(f"Logged in as {bot.user} (ID: {bot.user.id})")
+    log(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
 @bot.command(name = "10man")
 async def start_10man(ctx):
@@ -38,18 +37,18 @@ async def start_10man(ctx):
         if user not in registered_users:
             registered_users.append(user)
             await user.send("You have been registered for the 10man.")
-            log.log(f"{user.name} has registered by reacting.")
+            log(f"{user.name} has registered by reacting.")
 
         # Remove user
         async def reaction_remove(reaction, user):
             if str(reaction.emoji) == "👍" and user in registered_users:
                 registered_users.remove(user)
                 await user.send("You have been removed from the 10man.")
-                log.log(f"{user.name} has removed their react and as been dropped.")
+                log(f"{user.name} has removed their react and as been dropped.")
 
         bot.add_listener(reaction_remove, "on_reaction_remove")
 
     message = await ctx.send("Starting 10man.")
-    log.log("Loop exited!")
+    log("Loop exited!")
         
 bot.run(discord_token)
