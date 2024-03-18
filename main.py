@@ -7,7 +7,7 @@ from dotenv import load_dotenv, find_dotenv
 
 from logger import log
 
-log("Bot Starting")
+log("Starting bot")
 
 try:
     load_dotenv(find_dotenv())
