@@ -38,14 +38,14 @@ async def start_10man(ctx):
         if user not in registered_users:
             registered_users.append(user)
             await user.send("You have been registered for the 10man.")
-            log.log(registered_users)
+            log.log(f"{user.name} has registered by reacting.")
 
         # Remove user
         async def reaction_remove(reaction, user):
             if str(reaction.emoji) == "👍" and user in registered_users:
                 registered_users.remove(user)
                 await user.send("You have been removed from the 10man.")
-                log.log(registered_users)
+                log.log(f"{user.name} has removed their react and as been dropped.")
 
         bot.add_listener(reaction_remove, "on_reaction_remove")
 
