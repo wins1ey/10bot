@@ -8,8 +8,13 @@ from logger import log
 
 log("Bot Starting")
 
-load_dotenv(find_dotenv())
-discord_token = os.environ.get("DISCORD_TOKEN")
+try:
+    load_dotenv(find_dotenv())
+    discord_token = os.environ.get("DISCORD_TOKEN")
+    log(f"Discord token loaded")
+except Exception as e:
+    log(f"Error loading Discord token: {e}")
+    exit(1)
 
 intents = discord.Intents.default()
 intents.members = True
