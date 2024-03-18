@@ -78,6 +78,22 @@ class ButtonJoin(discord.ui.View):
             await interaction.response.send_message("You are not in this 10man.", ephemeral=True)
 
 
+class ButtonSelect(discord.ui.View):
+
+    def __init__(self, items):
+        super().__init__()
+        self.items = items
+        self.value = None
+
+        for item in self.items:
+            button = discord.ui.Button(label=item.name, style=discord.ButtonStyle.primary)
+            button.callback = self.on_button_click
+            self.add_item(button)
+
+    async def on_button_click(self, button, interaction):
+        await interaction.response.send_message(f"You clicked {button.label}")
+
+
 @bot.command(name="10man")
 async def start_10man(ctx):
     registered_users.clear()
@@ -99,8 +115,8 @@ async def get_captains():
 
     log(f"Selected captains: {captain1} and {captain2}")
 
-    await captain1.send("You have been selected as the captain of Team 1.")
-    await captain2.send("You have been selected as the captain of Team 2.")
+    await captain1.send("You have been selected as the captain of Team 1.", view=ButtonSelect(registered_users))
+    await captain2.send("You have been selected as the captain of Team 2.", view=ButtonSelect(registered_users))
 
     return captains
 
