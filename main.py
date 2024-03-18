@@ -60,8 +60,8 @@ async def start_10man(ctx):
     log("Loop exited!")
 
 try:
+    log("Running bot")
     bot.run(discord_token)
-    log("Bot running")
 except Exception as e:
     log(f"Error connecting to Discord: {e}")
     exit(1)
