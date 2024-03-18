@@ -1,4 +1,5 @@
 import os
+import random
 import signal
 
 import discord
@@ -49,8 +50,10 @@ class ButtonJoin(discord.ui.View):
             self.value = True
             if len(registered_users) == 10:
                 self.stop()
-                await interaction.response.edit_message(content=message, view=None)
                 log("10man populated")
+                captains = get_captains()
+                message = message + f"\nCaptains: {captains[0]} and {captains[1]}"
+                await interaction.response.edit_message(content=message, view=None)
             else:
                 await interaction.response.edit_message(content=message)
         else:
@@ -78,6 +81,22 @@ async def start_10man(ctx):
     registered_users.clear()
     await ctx.send("10man", view=ButtonJoin())
     log(f"{ctx.author.name} has started a 10man")
+
+
+def get_captains():
+
+    # Select 2 random captains.
+    captain1 = random.choice(registered_users)
+    registered_users.remove(captain1)
+    captain2 = random.choice(registered_users)
+    registered_users.remove(captain2)
+
+    captains = []
+    captains.append(captain1)
+    captains.append(captain2)
+
+    log(f"Selected captains: {captain1} and {captain2}")
+    return captains
 
 
 def signal_handler(sig, frame):
