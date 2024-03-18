@@ -52,7 +52,7 @@ class ButtonJoin(discord.ui.View):
             if len(registered_users) == 10:
                 self.stop()
                 log("10man populated")
-                captains = get_captains()
+                captains = await get_captains()
                 message = message + f"\nCaptains: {captains[0]} and {captains[1]}"
                 await interaction.response.edit_message(content=message, view=None)
             else:
@@ -85,7 +85,7 @@ async def start_10man(ctx):
     log(f"{ctx.author.name} has started a 10man")
 
 
-def get_captains():
+async def get_captains():
 
     # Select 2 random captains.
     captain1 = random.choice(registered_users)
@@ -98,6 +98,10 @@ def get_captains():
     captains.append(captain2)
 
     log(f"Selected captains: {captain1} and {captain2}")
+
+    await captain1.send("You have been selected as the captain of Team 1.")
+    await captain2.send("You have been selected as the captain of Team 2.")
+
     return captains
 
 
