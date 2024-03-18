@@ -11,7 +11,7 @@ log("Bot Starting")
 try:
     load_dotenv(find_dotenv())
     discord_token = os.environ.get("DISCORD_TOKEN")
-    log(f"Discord token loaded")
+    log("Discord token loaded")
 except Exception as e:
     log(f"Error loading Discord token: {e}")
     exit(1)
