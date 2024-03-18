@@ -40,13 +40,14 @@ class ButtonJoin(discord.ui.View):
 
     @discord.ui.button(label="Join", style=discord.ButtonStyle.green)
     async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        user = interaction.user
         name = interaction.user.name
-        if name not in registered_users:
+        if user not in registered_users:
             log(f"{name} joined the 10man")
-            registered_users.append(name)
+            registered_users.append(user)
             message = "10man\n\n"
             for users in registered_users:
-                message = message + users + "\n"
+                message = message + users.name + "\n"
             self.value = True
             if len(registered_users) == 10:
                 self.stop()
@@ -62,13 +63,14 @@ class ButtonJoin(discord.ui.View):
 
     @discord.ui.button(label="Leave", style=discord.ButtonStyle.red)
     async def leave(self, interaction: discord.Interaction, button: discord.ui.Button):
+        user = interaction.user
         name = interaction.user.name
-        if name in registered_users:
+        if user in registered_users:
             log(f"{name} left the 10man")
-            registered_users.remove(name)
+            registered_users.remove(user)
             message = "10man\n\n"
             for users in registered_users:
-                message = message + users + "\n"
+                message = message + users.name + "\n"
             await interaction.response.edit_message(content=message)
             self.value = True
         else:
