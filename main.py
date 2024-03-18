@@ -46,11 +46,13 @@ class ButtonJoin(discord.ui.View):
             message = "10man\n\n"
             for users in registered_users:
                 message = message + users + "\n"
-            await interaction.response.edit_message(content=message)
             self.value = True
             if len(registered_users) == 10:
                 self.stop()
+                await interaction.response.edit_message(content=message, view=None)
                 log("10man populated")
+            else:
+                await interaction.response.edit_message(content=message)
         else:
             log(f"{name} tried to join more than once")
             await interaction.response.send_message("You tried to join more than once.", ephemeral=True)
