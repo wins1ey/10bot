@@ -24,6 +24,7 @@ async def on_ready():
 @bot.command(name = "10man")
 async def start_10man(ctx):
     message = await ctx.send("React with :thumbsup: to join 10man.")
+    log(f"{ctx.author.name} has started a 10man.")
 
     def check(reaction, user):
         return user != bot.user and str(reaction.emoji) == "👍"
