@@ -84,6 +84,7 @@ class ButtonSelect(discord.ui.View):
         super().__init__()
         self.items = items
         self.value = None
+        log(f"Sent button panel: {str(items)}")
 
         for item in self.items:
             button = discord.ui.Button(label=item.name, style=discord.ButtonStyle.primary)
@@ -91,6 +92,7 @@ class ButtonSelect(discord.ui.View):
             self.add_item(button)
 
     async def on_button_click(self, button, interaction):
+        log(f"Button clicked to pick {button.label}")
         await interaction.response.send_message(f"You clicked {button.label}")
 
 
