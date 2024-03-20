@@ -113,6 +113,13 @@ async def get_captains():
     captains.append(captain1)
     captains.append(captain2)
 
+    global team1
+    global team2
+    team1 = []
+    team2 = []
+    team1.append(captain1)
+    team2.append(captain2)
+
     log(f"Selected captains: {captain1} and {captain2}")
 
     await captain1.send("You have been selected as the captain of Team 1.", view=ButtonSelect(registered_users))
