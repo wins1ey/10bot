@@ -110,6 +110,9 @@ async def start_10man(ctx):
 
 async def get_captains():
 
+    global captain1
+    global captain2
+
     # Select 2 random captains.
     captain1 = random.choice(registered_users)
     registered_users.remove(captain1)
@@ -123,13 +126,18 @@ async def get_captains():
     team1.append(captain1.name)
     team2.append(captain2.name)
 
+    global captains
+    captains = []
+    captains.append(captain1)
+    captains.append(captain2)
+
     log(f"Selected captains: {captain1} and {captain2}")
 
 
 async def pick_teams():
     while len(registered_users) > 0:
-        await team1[0].send("Pick:", view=ButtonSelect(registered_users))
-        await team2[0].send("Pick:", view=ButtonSelect(registered_users))
+        await captain1.send("Pick:", view=ButtonSelect(registered_users))
+        await captain2.send("Pick:", view=ButtonSelect(registered_users))
 
 
 def signal_handler(sig, frame):
