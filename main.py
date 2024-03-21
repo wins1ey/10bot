@@ -49,7 +49,7 @@ class ButtonJoin(discord.ui.View):
             for users in registered_users:
                 message = message + users.name + "\n"
             self.value = True
-            if len(registered_users) == 10:
+            if len(registered_users) == 4:
                 self.stop()
                 log("10man populated")
                 await get_captains()
@@ -94,6 +94,11 @@ class ButtonSelect(discord.ui.View):
 
     async def on_button_click(self, button, interaction):
         log(f"Button clicked to pick {button.label}")
+        if active_captain == 2:
+            active_captain = 1
+        elif active_captain == 1:
+            active_captain = 2
+
         if len(team1) > len(team2):
             team2.append(button.label)
         else:
@@ -135,9 +140,13 @@ async def get_captains():
 
 
 async def pick_teams():
+    global active_captain
+    active_captain = 1
     while len(registered_users) > 0:
-        await captain1.send("Pick:", view=ButtonSelect(registered_users))
-        await captain2.send("Pick:", view=ButtonSelect(registered_users))
+        if active_captain == 1:
+            await captain1.send("Pick:", view=ButtonSelect(registered_users))
+        elif active_captain == 2:
+            await captain2.send("Pick:", view=ButtonSelect(registered_users))
 
 
 def signal_handler(sig, frame):
