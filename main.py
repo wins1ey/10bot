@@ -52,8 +52,9 @@ class ButtonJoin(discord.ui.View):
             if len(registered_users) == 10:
                 self.stop()
                 log("10man populated")
-                captains = await get_captains()
-                message = message + f"\nCaptains: {captains[0]} and {captains[1]}"
+                await get_captains()
+                message = message + f"\nCaptains: {team1[0]} and {team2[0]}"
+                await pick_teams()
                 await interaction.response.edit_message(content=message, view=None)
             else:
                 await interaction.response.edit_message(content=message)
@@ -93,7 +94,11 @@ class ButtonSelect(discord.ui.View):
 
     async def on_button_click(self, button, interaction):
         log(f"Button clicked to pick {button.label}")
-        await interaction.response.send_message(f"You clicked {button.label}")
+        if len(team1) > len(team2):
+            team2.append(button.label)
+        else:
+            team1.append(button.label)
+        await interaction.response.send_message(f"Picked {button.label}")
 
 
 @bot.command(name="10man")
@@ -111,23 +116,20 @@ async def get_captains():
     captain2 = random.choice(registered_users)
     registered_users.remove(captain2)
 
-    captains = []
-    captains.append(captain1)
-    captains.append(captain2)
-
     global team1
     global team2
     team1 = []
     team2 = []
-    team1.append(captain1)
-    team2.append(captain2)
+    team1.append(captain1.name)
+    team2.append(captain2.name)
 
     log(f"Selected captains: {captain1} and {captain2}")
 
-    await captain1.send("You have been selected as the captain of Team 1.", view=ButtonSelect(registered_users))
-    await captain2.send("You have been selected as the captain of Team 2.", view=ButtonSelect(registered_users))
 
-    return captains
+async def pick_teams():
+    while len(registered_users) > 0:
+        await team1[0].send("Pick:", view=ButtonSelect(registered_users))
+        await team2[0].send("Pick:", view=ButtonSelect(registered_users))
 
 
 def signal_handler(sig, frame):
