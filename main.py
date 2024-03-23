@@ -95,9 +95,15 @@ class ButtonSelect(discord.ui.View):
     async def on_button_click(self, button, interaction):
         log(f"Button clicked to pick {button.label}")
         if len(team1) > len(team2):
-            team2.append(button.label)
+            for user in registered_users:
+                if user.name == button.label:
+                    team2.append(user)
+                    registered_users.remove(user)
         else:
-            team1.append(button.label)
+            for user in registered_users:
+                if user.name == button.label:
+                    team2.append(user)
+                    registered_users.remove(user)
         await interaction.response.send_message(f"Picked {button.label}")
 
 
