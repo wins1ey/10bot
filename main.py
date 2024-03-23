@@ -135,9 +135,14 @@ async def get_captains():
 
 
 async def pick_teams():
+    num = len(registered_users)
     while len(registered_users) > 0:
-        await captain1.send("Pick:", view=ButtonSelect(registered_users))
-        await captain2.send("Pick:", view=ButtonSelect(registered_users))
+        if len(registered_users) % 2 == 0 and len(registered_users) == num:
+            await captain1.send("Pick:", view=ButtonSelect(registered_users))
+            num -= 1
+        elif len(registered_users) % 2 == 1 and len(registered_users) == num:
+            await captain2.send("Pick:", view=ButtonSelect(registered_users))
+            num -= 1
 
 
 def signal_handler(sig, frame):
